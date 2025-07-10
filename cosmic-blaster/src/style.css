@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior-y: contain;
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #000;
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#game-canvas {
+  width: 100%;
+  height: 80vh;
+  background-color: #000;
+  touch-action: none;
+  image-rendering: pixelated;
+}
+
+#controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  touch-action: none;
+  z-index: 100;
+}
+
+.control-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  user-select: none;
+  touch-action: manipulation;
+  transition: all 0.1s ease;
+}
+
+.control-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.95);
+}
+
+.move-btn {
+  width: 60px;
+  height: 60px;
+}
+
+.shoot-btn {
+  width: 80px;
+  height: 80px;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .move-btn {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .shoot-btn {
+    width: 70px;
+    height: 70px;
+  }
+}
