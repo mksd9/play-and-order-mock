@@ -27,6 +27,8 @@ html, body {
   background-color: #000;
   touch-action: none;
   image-rendering: pixelated;
+  display: block;
+  border: 1px solid #333;
 }
 
 #controls {
