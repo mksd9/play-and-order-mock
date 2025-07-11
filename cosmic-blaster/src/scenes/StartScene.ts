@@ -4,6 +4,7 @@ import type { GameEngine } from '../GameEngine';
 export class StartScene implements Scene {
   private engine: GameEngine;
   private shootPressed = false;
+  private transitionTime = 0;
 
   constructor(engine: GameEngine) {
     this.engine = engine;
@@ -11,6 +12,7 @@ export class StartScene implements Scene {
 
   init(): void {
     this.shootPressed = false;
+    this.transitionTime = 0;
   }
 
   update(_deltaTime: number): void {
@@ -18,7 +20,11 @@ export class StartScene implements Scene {
     
     if (input.shoot && !this.shootPressed) {
       this.shootPressed = true;
+      this.transitionTime = Date.now();
       this.engine.requestFullscreen();
+    }
+    
+    if (this.transitionTime > 0 && Date.now() - this.transitionTime >= 1000) {
       this.engine.setState('signMessage');
     }
   }

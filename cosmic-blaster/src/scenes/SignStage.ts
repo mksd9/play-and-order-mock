@@ -36,6 +36,7 @@ export class SignStage implements Scene {
   private shotCooldown = 200; // ms
   private shootPressed = false;
   private targetsDestroyed = 0;
+  private completionTime = 0;
 
   constructor(engine: GameEngine) {
     this.engine = engine;
@@ -117,6 +118,7 @@ export class SignStage implements Scene {
     this.lastShotTime = 0;
     this.shootPressed = false;
     this.targetsDestroyed = 0;
+    this.completionTime = 0;
   }
 
   update(_deltaTime: number): void {
@@ -169,8 +171,13 @@ export class SignStage implements Scene {
     // Check completion condition (all 3 targets destroyed)
     const activeTargets = this.targets.filter(t => t.active && t.hp > 0);
     if (activeTargets.length === 0) {
-      // All sign targets destroyed, move to game message then game stage
-      this.engine.setState('gameMessage');
+      if (this.completionTime === 0) {
+        // Start the delay timer
+        this.completionTime = Date.now();
+      } else if (Date.now() - this.completionTime >= 1000) {
+        // 2 seconds have passed, transition to next stage
+        this.engine.setState('gameMessage');
+      }
     }
   }
 

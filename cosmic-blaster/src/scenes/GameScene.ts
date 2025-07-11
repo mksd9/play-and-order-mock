@@ -34,6 +34,7 @@ export class GameScene implements Scene {
   private lastShotTime = 0;
   private shotCooldown = 200; // ms
   private shootPressed = false;
+  private completionTime = 0;
 
   constructor(engine: GameEngine) {
     this.engine = engine;
@@ -97,6 +98,7 @@ export class GameScene implements Scene {
     this.bullets = [];
     this.lastShotTime = 0;
     this.shootPressed = false;
+    this.completionTime = 0;
   }
 
   update(_deltaTime: number): void {
@@ -152,14 +154,22 @@ export class GameScene implements Scene {
     const activeTargets = this.targets.filter(t => t.active && t.hp > 0);
     if (activeTargets.length === 0) {
       // All targets destroyed - shouldn't happen in this game
-      this.engine.setState('result');
+      if (this.completionTime === 0) {
+        this.completionTime = Date.now();
+      } else if (Date.now() - this.completionTime >= 1000) {
+        this.engine.setState('result');
+      }
     } else if (activeTargets.length === 1) {
       // One target destroyed
       const destroyedTarget = this.targets.find(t => !t.active || t.hp <= 0);
       if (destroyedTarget) {
-        const result = destroyedTarget === this.targets[0] ? 'left' : 'right';
-        this.engine.setGameResult(result);
-        this.engine.setState('result');
+        if (this.completionTime === 0) {
+          this.completionTime = Date.now();
+        } else if (Date.now() - this.completionTime >= 1000) {
+          const result = destroyedTarget === this.targets[0] ? 'left' : 'right';
+          this.engine.setGameResult(result);
+          this.engine.setState('result');
+        }
       }
     }
   }
