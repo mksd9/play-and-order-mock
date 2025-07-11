@@ -16,6 +16,7 @@ export class GameEngine {
   private lastTime = 0;
   private animationId = 0;
   private gameResult: 'left' | 'right' | null = null;
+  private starOffset = 0;
 
   constructor() {
     this.canvas = document.getElementById('game-canvas') as HTMLCanvasElement;
@@ -56,6 +57,12 @@ export class GameEngine {
   };
 
   private update(deltaTime: number): void {
+    // Update star background animation
+    this.starOffset += deltaTime * 0.05;
+    if (this.starOffset > 500) {
+      this.starOffset = 0;
+    }
+    
     const currentScene = this.scenes.get(this.currentState);
     if (currentScene) {
       currentScene.update(deltaTime);
@@ -65,10 +72,57 @@ export class GameEngine {
   private render(): void {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     
+    // Always render the common star background first
+    this.renderStarBackground();
+    
     const currentScene = this.scenes.get(this.currentState);
     if (currentScene) {
       currentScene.render(this.ctx);
     }
+  }
+  
+  private renderStarBackground(): void {
+    const ctx = this.ctx;
+    const canvas = this.canvas;
+    
+    // Background
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Multi-layer scrolling stars background
+    ctx.fillStyle = '#fff';
+    
+    // Fast stars (background layer)
+    for (let i = 0; i < 30; i++) {
+      const x = (i * 37) % canvas.width;
+      const y = ((i * 73) + this.starOffset * 2) % (canvas.height + 20);
+      if (y > 0) {
+        ctx.globalAlpha = 0.4;
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+    
+    // Medium stars (middle layer)
+    ctx.globalAlpha = 0.7;
+    for (let i = 0; i < 25; i++) {
+      const x = (i * 53) % canvas.width;
+      const y = ((i * 97) + this.starOffset * 3) % (canvas.height + 20);
+      if (y > 0) {
+        ctx.fillRect(x, y, 1.5, 1.5);
+      }
+    }
+    
+    // Slow bright stars (foreground layer)
+    ctx.globalAlpha = 1.0;
+    for (let i = 0; i < 20; i++) {
+      const x = (i * 71) % canvas.width;
+      const y = ((i * 113) + this.starOffset * 4) % (canvas.height + 20);
+      if (y > 0) {
+        ctx.fillRect(x, y, 2, 2);
+      }
+    }
+    
+    ctx.globalAlpha = 1.0;
   }
 
   setState(newState: GameState): void {

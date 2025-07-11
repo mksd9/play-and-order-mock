@@ -25,18 +25,6 @@ export class ResultScene implements Scene {
   render(ctx: CanvasRenderingContext2D): void {
     const canvas = this.engine.getCanvas();
     
-    // Background
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Stars
-    ctx.fillStyle = '#fff';
-    for (let i = 0; i < 50; i++) {
-      const x = (i * 37) % canvas.width;
-      const y = (i * 73) % canvas.height;
-      ctx.fillRect(x, y, 1, 1);
-    }
-    
     // Result message
     const result = this.engine.getGameResult();
     ctx.fillStyle = '#00ff00';

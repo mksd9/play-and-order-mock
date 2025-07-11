@@ -31,6 +31,7 @@ export class GameScene implements Scene {
   private bullets: Bullet[];
   private lastShotTime = 0;
   private shotCooldown = 200; // ms
+  private shootPressed = false;
 
   constructor(engine: GameEngine) {
     this.engine = engine;
@@ -83,6 +84,7 @@ export class GameScene implements Scene {
     
     this.bullets = [];
     this.lastShotTime = 0;
+    this.shootPressed = false;
   }
 
   update(_deltaTime: number): void {
@@ -97,10 +99,13 @@ export class GameScene implements Scene {
     this.player.x += this.player.vx;
     this.player.x = Math.max(0, Math.min(canvas.width - this.player.width, this.player.x));
     
-    // Handle shooting
-    if (input.shoot && Date.now() - this.lastShotTime > this.shotCooldown) {
+    // Handle shooting with proper button press detection
+    if (input.shoot && !this.shootPressed && Date.now() - this.lastShotTime > this.shotCooldown) {
       this.createBullet();
       this.lastShotTime = Date.now();
+      this.shootPressed = true;
+    } else if (!input.shoot) {
+      this.shootPressed = false;
     }
     
     // Update bullets
@@ -174,20 +179,6 @@ export class GameScene implements Scene {
   }
 
   render(ctx: CanvasRenderingContext2D): void {
-    const canvas = this.engine.getCanvas();
-    
-    // Background
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Stars
-    ctx.fillStyle = '#fff';
-    for (let i = 0; i < 50; i++) {
-      const x = (i * 37) % canvas.width;
-      const y = (i * 73) % canvas.height;
-      ctx.fillRect(x, y, 1, 1);
-    }
-    
     // Render player
     if (this.player.active && this.player.sprite) {
       ctx.drawImage(this.player.sprite, this.player.x, this.player.y);
