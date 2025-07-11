@@ -33,10 +33,10 @@ export class ResultScene implements Scene {
     
     if (result === 'left') {
       ctx.fillText('You destroyed the', canvas.width / 2, canvas.height / 2 - 20);
-      ctx.fillText('LEFT target!', canvas.width / 2, canvas.height / 2 + 20);
+      ctx.fillText('RAMEN target!', canvas.width / 2, canvas.height / 2 + 20);
     } else if (result === 'right') {
       ctx.fillText('You destroyed the', canvas.width / 2, canvas.height / 2 - 20);
-      ctx.fillText('RIGHT target!', canvas.width / 2, canvas.height / 2 + 20);
+      ctx.fillText('SPICY RAMEN target!', canvas.width / 2, canvas.height / 2 + 20);
     } else {
       ctx.fillText('Victory!', canvas.width / 2, canvas.height / 2);
     }

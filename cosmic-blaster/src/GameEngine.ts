@@ -1,12 +1,14 @@
 import { InputManager } from './ui/InputManager';
 import { StartScene } from './scenes/StartScene';
+import { SignMessageScene } from './scenes/SignMessageScene';
 import { SignStage } from './scenes/SignStage';
+import { GameMessageScene } from './scenes/GameMessageScene';
 import { GameScene } from './scenes/GameScene';
 import { ResultScene } from './scenes/ResultScene';
 import { ShortMovieScene } from './scenes/ShortMovieScene';
 import type { Scene } from './types/Scene';
 
-export type GameState = 'start' | 'sign' | 'game' | 'result' | 'movie';
+export type GameState = 'start' | 'signMessage' | 'sign' | 'gameMessage' | 'game' | 'result' | 'movie';
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -36,7 +38,9 @@ export class GameEngine {
 
   private initializeScenes(): void {
     this.scenes.set('start', new StartScene(this));
+    this.scenes.set('signMessage', new SignMessageScene(this));
     this.scenes.set('sign', new SignStage(this));
+    this.scenes.set('gameMessage', new GameMessageScene(this));
     this.scenes.set('game', new GameScene(this));
     this.scenes.set('result', new ResultScene(this));
     this.scenes.set('movie', new ShortMovieScene(this));

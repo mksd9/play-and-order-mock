@@ -61,6 +61,9 @@ export class SignStage implements Scene {
     this.player.y = canvas.height - 60;
     this.player.hp = 1;
     this.player.active = true;
+    this.player.baseX = canvas.width / 2 - 16;
+    this.player.animationOffset = 0;
+    this.player.signText = '';
     this.player.sprite = this.assetManager.createPlayerSprite();
     
     // Initialize 3 sign targets
@@ -166,8 +169,8 @@ export class SignStage implements Scene {
     // Check completion condition (all 3 targets destroyed)
     const activeTargets = this.targets.filter(t => t.active && t.hp > 0);
     if (activeTargets.length === 0) {
-      // All sign targets destroyed, move to game stage
-      this.engine.setState('game');
+      // All sign targets destroyed, move to game message then game stage
+      this.engine.setState('gameMessage');
     }
   }
 

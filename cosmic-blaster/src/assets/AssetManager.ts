@@ -60,7 +60,6 @@ export class AssetManager {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const bowlWidth = 140;
-    const bowlHeight = 100;
     
     // Bowl base (bottom half circle)
     ctx.fillStyle = '#8B4513';
