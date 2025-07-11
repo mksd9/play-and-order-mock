@@ -41,7 +41,8 @@ export class GameScene implements Scene {
     
     this.player = {
       x: 0, y: 0, width: 32, height: 32,
-      vx: 0, vy: 0, hp: 1, active: true
+      vx: 0, vy: 0, hp: 1, active: true,
+      baseX: 0, animationOffset: 0
     };
     
     this.targets = [];
@@ -59,6 +60,8 @@ export class GameScene implements Scene {
     this.player.y = canvas.height - 60;
     this.player.hp = 1;
     this.player.active = true;
+    this.player.baseX = canvas.width / 2 - 16;
+    this.player.animationOffset = 0;
     this.player.sprite = this.assetManager.createPlayerSprite();
     
     // Initialize targets (4x larger size)

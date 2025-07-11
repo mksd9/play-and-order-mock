@@ -4,7 +4,6 @@ import type { GameEngine } from '../GameEngine';
 export class SignMessageScene implements Scene {
   private engine: GameEngine;
   private startTime = 0;
-  private blinkCount = 0;
   private maxBlinks = 5;
   private blinkDuration = 500; // ms per blink
 
@@ -14,7 +13,6 @@ export class SignMessageScene implements Scene {
 
   init(): void {
     this.startTime = Date.now();
-    this.blinkCount = 0;
   }
 
   update(_deltaTime: number): void {
