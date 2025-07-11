@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play and Order Mock - Cosmic Blaster</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00ff00, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        .play-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+        .features {
+            margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .feature {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .feature h3 {
+            margin: 0 0 0.5rem 0;
+            color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 COSMIC BLASTER</h1>
+        <div class="description">
+            宇宙を舞台にしたシューティングゲーム！<br>
+            敵の宇宙船を撃破して宇宙の平和を守ろう。
+        </div>
+        
+        <a href="/play-and-order-mock/cosmic-blaster/" class="play-button">
+            🎮 ゲームを開始
+        </a>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>📱 モバイル対応</h3>
+                <p>スマートフォンでも快適にプレイ可能</p>
+            </div>
+            <div class="feature">
+                <h3>🎯 シンプル操作</h3>
+                <p>直感的な操作でお楽しみいただけます</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ 軽量</h3>
+                <p>ブラウザで即座に起動</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-redirect after 3 seconds if user doesn't click
+        setTimeout(() => {
+            if (!document.hidden) {
+                window.location.href = '/play-and-order-mock/cosmic-blaster/';
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
