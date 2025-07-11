@@ -1,4 +1,5 @@
-import { Scene, GameEngine } from '../GameEngine';
+import type { Scene } from '../types/Scene';
+import type { GameEngine } from '../GameEngine';
 
 export class ResultScene implements Scene {
   private engine: GameEngine;
@@ -13,7 +14,7 @@ export class ResultScene implements Scene {
     this.startTime = Date.now();
   }
 
-  update(deltaTime: number): void {
+  update(_deltaTime: number): void {
     const elapsed = Date.now() - this.startTime;
     
     if (elapsed >= this.duration) {

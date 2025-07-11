@@ -1,4 +1,5 @@
-import { Scene, GameEngine } from '../GameEngine';
+import type { Scene } from '../types/Scene';
+import type { GameEngine } from '../GameEngine';
 
 export class StartScene implements Scene {
   private engine: GameEngine;
@@ -12,7 +13,7 @@ export class StartScene implements Scene {
     this.shootPressed = false;
   }
 
-  update(deltaTime: number): void {
+  update(_deltaTime: number): void {
     const input = this.engine.getInputState();
     
     if (input.shoot && !this.shootPressed) {

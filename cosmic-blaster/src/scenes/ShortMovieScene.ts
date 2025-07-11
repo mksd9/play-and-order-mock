@@ -1,4 +1,5 @@
-import { Scene, GameEngine } from '../GameEngine';
+import type { Scene } from '../types/Scene';
+import type { GameEngine } from '../GameEngine';
 import { AssetManager } from '../assets/AssetManager';
 
 export class ShortMovieScene implements Scene {

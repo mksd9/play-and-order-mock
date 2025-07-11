@@ -1,4 +1,5 @@
-import { Scene, GameEngine } from '../GameEngine';
+import type { Scene } from '../types/Scene';
+import type { GameEngine } from '../GameEngine';
 import { AssetManager } from '../assets/AssetManager';
 
 interface Entity {
@@ -84,7 +85,7 @@ export class GameScene implements Scene {
     this.lastShotTime = 0;
   }
 
-  update(deltaTime: number): void {
+  update(_deltaTime: number): void {
     const input = this.engine.getInputState();
     const canvas = this.engine.getCanvas();
     
