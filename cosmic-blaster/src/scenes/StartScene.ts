@@ -19,7 +19,7 @@ export class StartScene implements Scene {
     if (input.shoot && !this.shootPressed) {
       this.shootPressed = true;
       this.engine.requestFullscreen();
-      this.engine.setState('game');
+      this.engine.setState('sign');
     }
   }
 

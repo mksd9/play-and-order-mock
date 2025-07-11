@@ -190,6 +190,41 @@ export class AssetManager {
     return canvas;
   }
 
+  createSignSprite(): HTMLCanvasElement {
+    if (this.canvasCache.has('sign')) {
+      return this.canvasCache.get('sign')!;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 192;
+    canvas.height = 192;
+    const ctx = canvas.getContext('2d')!;
+
+    // Sign post
+    ctx.fillStyle = '#8B4513';
+    ctx.fillRect(86, 120, 20, 72);
+
+    // Sign board
+    ctx.fillStyle = '#D2B48C';
+    ctx.fillRect(20, 60, 152, 80);
+
+    // Sign board border
+    ctx.strokeStyle = '#8B4513';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(20, 60, 152, 80);
+
+    // Shadow effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.fillRect(24, 64, 152, 80);
+
+    // Sign board (main area)
+    ctx.fillStyle = '#F5DEB3';
+    ctx.fillRect(20, 60, 148, 76);
+
+    this.canvasCache.set('sign', canvas);
+    return canvas;
+  }
+
   createBulletSprite(): HTMLCanvasElement {
     if (this.canvasCache.has('bullet')) {
       return this.canvasCache.get('bullet')!;
