@@ -29,9 +29,9 @@ jobs:
         cache-dependency-path: cosmic-blaster/pnpm-lock.yaml
         
     - name: Setup pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v4
       with:
-        version: 8
+        version: 9
         
     - name: Install dependencies
       run: |
@@ -42,6 +42,15 @@ jobs:
       run: |
         cd cosmic-blaster
         pnpm run build
+        
+    - name: Verify build output
+      run: |
+        echo "=== Checking if build succeeded ==="
+        if [ ! -f "cosmic-blaster/dist/index.html" ]; then
+          echo "ERROR: Build failed, no dist/index.html found"
+          exit 1
+        fi
+        echo "Build succeeded, dist/index.html exists"
         
     - name: Prepare deployment directory
       run: |
