@@ -12,6 +12,8 @@ interface Entity {
   hp: number;
   active: boolean;
   sprite?: HTMLCanvasElement;
+  baseX: number; // Base position for animation
+  animationOffset: number; // Phase offset for animation
 }
 
 interface Bullet {
@@ -63,25 +65,29 @@ export class GameScene implements Scene {
     this.targets = [
       {
         x: canvas.width / 4 - 96,
-        y: 50,
+        y: canvas.height / 2 - 96,
         width: 192,
         height: 192,
         vx: 0,
         vy: 0,
         hp: 10,
         active: true,
-        sprite: this.assetManager.createTargetSprite()
+        sprite: this.assetManager.createTargetSprite(),
+        baseX: canvas.width / 4 - 96,
+        animationOffset: 0 // Left target starts at 0
       },
       {
         x: (canvas.width * 3) / 4 - 96,
-        y: 50,
+        y: canvas.height / 2 - 96,
         width: 192,
         height: 192,
         vx: 0,
         vy: 0,
         hp: 10,
         active: true,
-        sprite: this.assetManager.createTargetSprite()
+        sprite: this.assetManager.createTargetSprite(),
+        baseX: (canvas.width * 3) / 4 - 96,
+        animationOffset: Math.PI / 3 // Right target offset by π/3 (60 degrees)
       }
     ];
     
@@ -93,6 +99,17 @@ export class GameScene implements Scene {
   update(_deltaTime: number): void {
     const input = this.engine.getInputState();
     const canvas = this.engine.getCanvas();
+    
+    // Update target animations (swaying motion)
+    const currentTime = Date.now() / 1000; // Convert to seconds
+    this.targets.forEach(target => {
+      if (target.active) {
+        // Gentle horizontal swaying motion
+        const swayAmount = 15; // Maximum pixel offset
+        const swaySpeed = 1.5; // Speed of the sway
+        target.x = target.baseX + Math.sin(currentTime * swaySpeed + target.animationOffset) * swayAmount;
+      }
+    });
     
     // Update player movement
     this.player.vx = 0;
