@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  base: '/play-and-order-mock/cosmic-blaster/',
+  base: '/play-and-order-mock/',
   server: {
     host: true,
     port: 5173
