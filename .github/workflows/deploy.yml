@@ -18,18 +18,23 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: cosmic-blaster/package-lock.json
+        cache: 'pnpm'
+        cache-dependency-path: cosmic-blaster/pnpm-lock.yaml
+        
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
         
     - name: Install dependencies
       run: |
         cd cosmic-blaster
-        npm ci
+        pnpm install
         
     - name: Build
       run: |
         cd cosmic-blaster
-        npm run build
+        pnpm run build
         
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
