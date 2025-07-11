@@ -36,10 +36,17 @@ jobs:
         cd cosmic-blaster
         pnpm run build
         
+    - name: List build output
+      run: |
+        ls -la cosmic-blaster/dist/
+        echo "=== Content of index.html ==="
+        head -20 cosmic-blaster/dist/index.html
+        
     - name: Deploy to GitHub Pages
       if: github.ref == 'refs/heads/main'
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./cosmic-blaster/dist
         destination_dir: cosmic-blaster
+        force_orphan: true
