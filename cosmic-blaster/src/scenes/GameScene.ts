@@ -25,12 +25,34 @@ interface Bullet {
   sprite?: HTMLCanvasElement;
 }
 
+interface UFO {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  vx: number;
+  active: boolean;
+  sprite?: HTMLCanvasElement;
+}
+
+interface NiceMessage {
+  x: number;
+  y: number;
+  startTime: number;
+  active: boolean;
+}
+
 export class GameScene implements Scene {
   private engine: GameEngine;
   private assetManager: AssetManager;
   private player: Entity;
   private targets: Entity[];
   private bullets: Bullet[];
+  private ufo: UFO | null = null;
+  private niceMessage: NiceMessage | null = null;
+  private gameStartTime = 0;
+  private lastUFOSpawnTime = 0;
+  private ufoDefeated = false;
   private lastShotTime = 0;
   private shotCooldown = 200; // ms
   private shootPressed = false;
@@ -55,6 +77,9 @@ export class GameScene implements Scene {
     this.assetManager.clearCache();
     
     const canvas = this.engine.getCanvas();
+    
+    // Initialize game timer
+    this.gameStartTime = Date.now();
     
     // Initialize player
     this.player.x = canvas.width / 2 - 16;
@@ -96,6 +121,10 @@ export class GameScene implements Scene {
     ];
     
     this.bullets = [];
+    this.ufo = null;
+    this.niceMessage = null;
+    this.lastUFOSpawnTime = 0;
+    this.ufoDefeated = false;
     this.lastShotTime = 0;
     this.shootPressed = false;
     this.completionTime = 0;
@@ -115,6 +144,12 @@ export class GameScene implements Scene {
         target.x = target.baseX + Math.sin(currentTime * swaySpeed + target.animationOffset) * swayAmount;
       }
     });
+    
+    // Update UFO (spawn after 5 seconds)
+    this.updateUFO(canvas);
+    
+    // Update NICE message
+    this.updateNiceMessage();
     
     // Update player movement
     this.player.vx = 0;
@@ -149,6 +184,9 @@ export class GameScene implements Scene {
     
     // Check collisions
     this.checkCollisions();
+    
+    // Check UFO collisions
+    this.checkUFOCollisions();
     
     // Check win condition
     const activeTargets = this.targets.filter(t => t.active && t.hp > 0);
@@ -220,6 +258,137 @@ export class GameScene implements Scene {
     
     return distance <= targetRadius;
   }
+  
+  private updateUFO(canvas: HTMLCanvasElement): void {
+    const currentTime = Date.now();
+    const elapsedTime = currentTime - this.gameStartTime;
+    
+    // Don't spawn UFO if it has been defeated
+    if (this.ufoDefeated) {
+      return;
+    }
+    
+    // Spawn UFO logic
+    if (!this.ufo) {
+      let shouldSpawn = false;
+      
+      // First UFO after 3 seconds
+      if (elapsedTime >= 3000 && this.lastUFOSpawnTime === 0) {
+        shouldSpawn = true;
+      }
+      // Subsequent UFOs every 10 seconds after the last one was spawned
+      else if (this.lastUFOSpawnTime > 0 && currentTime - this.lastUFOSpawnTime >= 10000) {
+        shouldSpawn = true;
+      }
+      
+      if (shouldSpawn) {
+        this.ufo = {
+          x: canvas.width,
+          y: 50, // Fixed position in upper part of screen
+          width: 80,
+          height: 40,
+          vx: -4, // Move left slightly faster
+          active: true,
+          sprite: this.createUFOSprite()
+        };
+        this.lastUFOSpawnTime = currentTime;
+        console.log('UFO spawned at:', this.ufo.x, this.ufo.y, 'Time since last spawn:', this.lastUFOSpawnTime > 0 ? (currentTime - this.lastUFOSpawnTime) / 1000 + 's' : 'First spawn');
+      }
+    }
+    
+    // Update UFO movement
+    if (this.ufo && this.ufo.active) {
+      this.ufo.x += this.ufo.vx;
+      
+      // Remove UFO when it goes off screen
+      if (this.ufo.x + this.ufo.width < 0) {
+        console.log('UFO removed - went off screen');
+        this.ufo = null;
+      }
+    }
+  }
+  
+  private updateNiceMessage(): void {
+    if (this.niceMessage && this.niceMessage.active) {
+      const elapsedTime = Date.now() - this.niceMessage.startTime;
+      
+      // Hide message after 2 seconds
+      if (elapsedTime >= 2000) {
+        this.niceMessage = null;
+      }
+    }
+  }
+  
+  private checkUFOCollisions(): void {
+    if (!this.ufo || !this.ufo.active) return;
+    
+    this.bullets.forEach(bullet => {
+      if (!bullet.active) return;
+      
+      // Simple rectangular collision detection for UFO
+      if (bullet.x < this.ufo!.x + this.ufo!.width &&
+          bullet.x + 4 > this.ufo!.x &&
+          bullet.y < this.ufo!.y + this.ufo!.height &&
+          bullet.y + 8 > this.ufo!.y) {
+        
+        // UFO hit!
+        bullet.active = false;
+        this.ufo!.active = false;
+        this.ufoDefeated = true; // Mark UFO as defeated
+        
+        // Show NICE message
+        this.niceMessage = {
+          x: this.ufo!.x,
+          y: this.ufo!.y,
+          startTime: Date.now(),
+          active: true
+        };
+        
+        console.log('UFO defeated! No more UFOs will spawn.');
+        
+        // Remove UFO after a short delay
+        setTimeout(() => {
+          this.ufo = null;
+        }, 100);
+      }
+    });
+  }
+  
+  private createUFOSprite(): HTMLCanvasElement {
+    const canvas = document.createElement('canvas');
+    canvas.width = 80;
+    canvas.height = 40;
+    const ctx = canvas.getContext('2d')!;
+    
+    // Draw UFO body (ellipse)
+    ctx.fillStyle = '#C0C0C0';
+    ctx.strokeStyle = '#808080';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(40, 25, 35, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Draw UFO dome
+    ctx.fillStyle = '#ADD8E6';
+    ctx.strokeStyle = '#4682B4';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(40, 20, 25, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Draw lights
+    ctx.fillStyle = '#FFD700';
+    for (let i = 0; i < 6; i++) {
+      const x = 15 + i * 10;
+      ctx.beginPath();
+      ctx.arc(x, 25, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    return canvas;
+  }
 
   render(ctx: CanvasRenderingContext2D): void {
     // Render player
@@ -268,9 +437,33 @@ export class GameScene implements Scene {
         ctx.drawImage(bullet.sprite, bullet.x, bullet.y);
       }
     });
+    
+    // Render UFO
+    if (this.ufo && this.ufo.active && this.ufo.sprite) {
+      ctx.drawImage(this.ufo.sprite, this.ufo.x, this.ufo.y);
+    }
+    
+    // Render NICE message
+    if (this.niceMessage && this.niceMessage.active) {
+      ctx.save();
+      ctx.fillStyle = '#FFD700';
+      ctx.strokeStyle = '#FF4500';
+      ctx.lineWidth = 3;
+      ctx.font = 'bold 48px Arial';
+      ctx.textAlign = 'center';
+      
+      const text = 'NICE!';
+      ctx.strokeText(text, this.niceMessage.x + 30, this.niceMessage.y + 20);
+      ctx.fillText(text, this.niceMessage.x + 30, this.niceMessage.y + 20);
+      ctx.restore();
+    }
   }
 
   cleanup(): void {
     this.bullets = [];
+    this.ufo = null;
+    this.niceMessage = null;
+    this.lastUFOSpawnTime = 0;
+    this.ufoDefeated = false;
   }
 }
