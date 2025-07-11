@@ -43,11 +43,20 @@ jobs:
         cd cosmic-blaster
         pnpm run build
         
+    - name: Prepare deployment directory
+      run: |
+        mkdir -p deploy/cosmic-blaster
+        cp index.html deploy/
+        cp -r cosmic-blaster/dist/* deploy/cosmic-blaster/
+        
     - name: List build output
       run: |
-        ls -la cosmic-blaster/dist/
-        echo "=== Content of index.html ==="
-        head -20 cosmic-blaster/dist/index.html
+        echo "=== Deployment structure ==="
+        find deploy -type f
+        echo "=== Root index.html ==="
+        head -10 deploy/index.html
+        echo "=== Game index.html ==="
+        head -10 deploy/cosmic-blaster/index.html
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
@@ -55,7 +64,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: './cosmic-blaster/dist'
+        path: './deploy'
         
   deploy:
     environment:
