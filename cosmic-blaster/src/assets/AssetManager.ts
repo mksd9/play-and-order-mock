@@ -56,60 +56,102 @@ export class AssetManager {
     canvas.height = 192;
     const ctx = canvas.getContext('2d')!;
 
-    // Ramen bowl shape
+    // Ramen bowl shape - side view
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const bowlRadius = 80;
+    const bowlWidth = 140;
+    const bowlHeight = 100;
     
-    // Bowl outer rim
+    // Bowl base (bottom half circle)
     ctx.fillStyle = '#8B4513';
     ctx.beginPath();
-    ctx.arc(centerX, centerY, bowlRadius, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY + 20, bowlWidth / 2, 0, Math.PI);
     ctx.fill();
     
-    // Bowl inner (soup area)
+    // Bowl walls (side rectangles)
     ctx.fillStyle = '#D2691E';
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, bowlRadius - 8, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillRect(centerX - bowlWidth / 2, centerY - 30, 10, 50);
+    ctx.fillRect(centerX + bowlWidth / 2 - 10, centerY - 30, 10, 50);
     
-    // Soup
+    // Bowl rim (top edge)
+    ctx.fillStyle = '#A0522D';
+    ctx.fillRect(centerX - bowlWidth / 2 - 5, centerY - 35, bowlWidth + 10, 8);
+    
+    // Soup surface (rectangle)
     ctx.fillStyle = '#FF8C00';
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, bowlRadius - 15, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillRect(centerX - bowlWidth / 2 + 10, centerY - 30, bowlWidth - 20, 6);
     
-    // Noodles pattern
+    // Soup highlight
+    ctx.fillStyle = '#FFB347';
+    ctx.globalAlpha = 0.7;
+    ctx.fillRect(centerX - 30, centerY - 28, 25, 3);
+    ctx.globalAlpha = 1;
+    
+    // Noodles (wavy lines visible from side)
     ctx.strokeStyle = '#FFD700';
-    ctx.lineWidth = 3;
-    for (let i = 0; i < 8; i++) {
-      const angle = (i / 8) * Math.PI * 2;
-      const startX = centerX + Math.cos(angle) * 20;
-      const startY = centerY + Math.sin(angle) * 20;
-      const endX = centerX + Math.cos(angle + 0.5) * 50;
-      const endY = centerY + Math.sin(angle + 0.5) * 50;
-      
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 5; i++) {
+      const x = centerX - 50 + i * 20;
       ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.quadraticCurveTo(centerX, centerY, endX, endY);
+      ctx.moveTo(x, centerY - 25);
+      ctx.quadraticCurveTo(x + 5, centerY - 15, x + 10, centerY - 5);
+      ctx.quadraticCurveTo(x + 15, centerY + 5, x + 20, centerY + 15);
       ctx.stroke();
     }
     
-    // Ingredients (circular toppings)
-    ctx.fillStyle = '#90EE90'; // Green onion
+    // Toppings visible from side
+    // Green onion (vertical strips)
+    ctx.fillStyle = '#90EE90';
+    ctx.fillRect(centerX - 40, centerY - 25, 3, 8);
+    ctx.fillRect(centerX - 25, centerY - 23, 3, 6);
+    ctx.fillRect(centerX + 20, centerY - 26, 3, 9);
+    
+    // Chashu pork (round slices)
+    ctx.fillStyle = '#FFB6C1';
     ctx.beginPath();
-    ctx.arc(centerX - 25, centerY - 20, 8, 0, Math.PI * 2);
+    ctx.arc(centerX - 15, centerY - 18, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#FF69B4';
+    ctx.beginPath();
+    ctx.arc(centerX - 15, centerY - 18, 5, 0, Math.PI * 2);
     ctx.fill();
     
-    ctx.fillStyle = '#FFB6C1'; // Chashu pork
+    ctx.fillStyle = '#FFB6C1';
     ctx.beginPath();
-    ctx.arc(centerX + 20, centerY - 15, 12, 0, Math.PI * 2);
+    ctx.arc(centerX + 30, centerY - 20, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#FF69B4';
+    ctx.beginPath();
+    ctx.arc(centerX + 30, centerY - 20, 4, 0, Math.PI * 2);
     ctx.fill();
     
-    ctx.fillStyle = '#FFFF00'; // Egg yolk
+    // Soft-boiled egg half
+    ctx.fillStyle = '#FFFACD';
     ctx.beginPath();
-    ctx.arc(centerX - 10, centerY + 25, 10, 0, Math.PI * 2);
+    ctx.arc(centerX + 5, centerY - 15, 6, 0, Math.PI * 2);
     ctx.fill();
+    ctx.fillStyle = '#FFFF00';
+    ctx.beginPath();
+    ctx.arc(centerX + 5, centerY - 15, 3, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Menma (bamboo shoots sticking up)
+    ctx.fillStyle = '#DEB887';
+    ctx.fillRect(centerX - 5, centerY - 30, 2, 12);
+    ctx.fillRect(centerX + 15, centerY - 28, 2, 10);
+    
+    // Steam effect
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.5;
+    for (let i = 0; i < 4; i++) {
+      const x = centerX - 30 + i * 20;
+      ctx.beginPath();
+      ctx.moveTo(x, centerY - 35);
+      ctx.quadraticCurveTo(x + 3, centerY - 45, x - 2, centerY - 55);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
 
     this.canvasCache.set('target', canvas);
     return canvas;
