@@ -10,6 +10,11 @@ export class AssetManager {
     return AssetManager.instance;
   }
 
+  clearCache(): void {
+    this.canvasCache.clear();
+    this.audioCache.clear();
+  }
+
   createPlayerSprite(): HTMLCanvasElement {
     if (this.canvasCache.has('player')) {
       return this.canvasCache.get('player')!;
@@ -20,7 +25,10 @@ export class AssetManager {
     canvas.height = 32;
     const ctx = canvas.getContext('2d')!;
 
-    // Simple triangle spaceship
+    // Clear canvas to ensure transparency
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Simple triangle spaceship with transparent background
     ctx.fillStyle = '#00ff00';
     ctx.beginPath();
     ctx.moveTo(16, 4);
@@ -44,22 +52,64 @@ export class AssetManager {
     }
 
     const canvas = document.createElement('canvas');
-    canvas.width = 48;
-    canvas.height = 48;
+    canvas.width = 192;
+    canvas.height = 192;
     const ctx = canvas.getContext('2d')!;
 
-    // Enemy ship - rounded rectangle with details
-    ctx.fillStyle = '#ff0000';
-    ctx.fillRect(8, 16, 32, 16);
+    // Ramen bowl shape
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const bowlRadius = 80;
     
-    // Wings
-    ctx.fillStyle = '#cc0000';
-    ctx.fillRect(4, 20, 8, 8);
-    ctx.fillRect(36, 20, 8, 8);
+    // Bowl outer rim
+    ctx.fillStyle = '#8B4513';
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, bowlRadius, 0, Math.PI * 2);
+    ctx.fill();
     
-    // Cockpit
-    ctx.fillStyle = '#ffff00';
-    ctx.fillRect(20, 18, 8, 4);
+    // Bowl inner (soup area)
+    ctx.fillStyle = '#D2691E';
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, bowlRadius - 8, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Soup
+    ctx.fillStyle = '#FF8C00';
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, bowlRadius - 15, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Noodles pattern
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 3;
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const startX = centerX + Math.cos(angle) * 20;
+      const startY = centerY + Math.sin(angle) * 20;
+      const endX = centerX + Math.cos(angle + 0.5) * 50;
+      const endY = centerY + Math.sin(angle + 0.5) * 50;
+      
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.quadraticCurveTo(centerX, centerY, endX, endY);
+      ctx.stroke();
+    }
+    
+    // Ingredients (circular toppings)
+    ctx.fillStyle = '#90EE90'; // Green onion
+    ctx.beginPath();
+    ctx.arc(centerX - 25, centerY - 20, 8, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#FFB6C1'; // Chashu pork
+    ctx.beginPath();
+    ctx.arc(centerX + 20, centerY - 15, 12, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#FFFF00'; // Egg yolk
+    ctx.beginPath();
+    ctx.arc(centerX - 10, centerY + 25, 10, 0, Math.PI * 2);
+    ctx.fill();
 
     this.canvasCache.set('target', canvas);
     return canvas;

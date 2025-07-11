@@ -47,6 +47,9 @@ export class GameScene implements Scene {
   }
 
   init(): void {
+    // Clear asset cache to ensure new designs are loaded
+    this.assetManager.clearCache();
+    
     const canvas = this.engine.getCanvas();
     
     // Initialize player
@@ -56,13 +59,13 @@ export class GameScene implements Scene {
     this.player.active = true;
     this.player.sprite = this.assetManager.createPlayerSprite();
     
-    // Initialize targets
+    // Initialize targets (4x larger size)
     this.targets = [
       {
-        x: canvas.width / 4 - 24,
+        x: canvas.width / 4 - 96,
         y: 50,
-        width: 48,
-        height: 48,
+        width: 192,
+        height: 192,
         vx: 0,
         vy: 0,
         hp: 10,
@@ -70,10 +73,10 @@ export class GameScene implements Scene {
         sprite: this.assetManager.createTargetSprite()
       },
       {
-        x: (canvas.width * 3) / 4 - 24,
+        x: (canvas.width * 3) / 4 - 96,
         y: 50,
-        width: 48,
-        height: 48,
+        width: 192,
+        height: 192,
         vx: 0,
         vy: 0,
         hp: 10,
@@ -172,10 +175,20 @@ export class GameScene implements Scene {
   }
 
   private isColliding(bullet: Bullet, target: Entity): boolean {
-    return bullet.x < target.x + target.width &&
-           bullet.x + 4 > target.x &&
-           bullet.y < target.y + target.height &&
-           bullet.y + 8 > target.y;
+    // Circular collision detection for ramen bowl targets
+    const targetCenterX = target.x + target.width / 2;
+    const targetCenterY = target.y + target.height / 2;
+    const targetRadius = 80; // Same as bowl radius in AssetManager
+    
+    const bulletCenterX = bullet.x + 2;
+    const bulletCenterY = bullet.y + 4;
+    
+    const distance = Math.sqrt(
+      (bulletCenterX - targetCenterX) ** 2 + 
+      (bulletCenterY - targetCenterY) ** 2
+    );
+    
+    return distance <= targetRadius;
   }
 
   render(ctx: CanvasRenderingContext2D): void {
@@ -185,15 +198,31 @@ export class GameScene implements Scene {
     }
     
     // Render targets
-    this.targets.forEach(target => {
+    this.targets.forEach((target, index) => {
       if (target.active && target.sprite) {
-        ctx.drawImage(target.sprite, target.x, target.y);
+        ctx.drawImage(target.sprite, target.x, target.y, target.width, target.height);
+        
+        // Add text labels
+        ctx.save();
+        ctx.fillStyle = '#fff';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.font = 'bold 24px Arial';
+        ctx.textAlign = 'center';
+        
+        const textX = target.x + target.width / 2;
+        const textY = target.y + target.height / 2;
+        
+        const text = index === 0 ? 'RAMEN' : 'SPICY RAMEN';
+        ctx.strokeText(text, textX, textY);
+        ctx.fillText(text, textX, textY);
+        ctx.restore();
         
         // HP bar
-        const barWidth = 40;
-        const barHeight = 4;
+        const barWidth = 80; // Increased for larger targets
+        const barHeight = 8;
         const barX = target.x + (target.width - barWidth) / 2;
-        const barY = target.y - 10;
+        const barY = target.y - 15;
         
         ctx.fillStyle = '#333';
         ctx.fillRect(barX, barY, barWidth, barHeight);
