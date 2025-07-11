@@ -441,15 +441,9 @@ export class GameEngine {
   }
 
   private setupCanvas(): void {
-    const resizeCanvas = () => {
-      const rect = this.canvas.getBoundingClientRect();
-      this.canvas.width = rect.width || 800;
-      this.canvas.height = rect.height || 600;
-      console.log('Canvas size:', this.canvas.width, 'x', this.canvas.height);
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    this.canvas.width = 640;
+    this.canvas.height = 480;
+    console.log('Canvas size:', this.canvas.width, 'x', this.canvas.height);
   }
 
   private initializeScenes(): void {
